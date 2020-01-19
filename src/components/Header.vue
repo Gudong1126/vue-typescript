@@ -22,13 +22,35 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Mutation, State } from 'vuex-class'
+import { ITodoItem, Mode } from '../store/state'
+import { _ } from '../utils'
+
 @Component({})
 export default class Header extends Vue {
+    @State private todoItem!: ITodoItem[]
+    @Mutation private createTodoItem!: (todo: ITodoItem) => void
+    @Mutation private finishTodoItem!: () => void
+
+    private createTodoItemHandle () {
+        const newItem: ITodoItem = {
+            id: _.uuid(),
+            name: '新任务',
+            isDone: false,
+            mode: Mode.edit,
+            iconName: 'yingtao',
+            color: '#FFCC22'
+        }
+        this.createTodoItem(newItem)
+    }
+
     private leftHandle () {
+        this.finishTodoItem()
         this.$router.back()
     }
 
     private rightHandle () {
+        this.createTodoItemHandle()
         this.$router.push({ path: '/create' })
     }
 
